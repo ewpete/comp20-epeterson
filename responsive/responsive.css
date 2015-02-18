@@ -1,6 +1,6 @@
 /* greater than 1200 pixels,
   display first image on top row */
-@media only screen and (min-width : 1200px) {
+@media only screen and (min-width: 1200px) {
         .software { 
                 width:128px; 
                 height:240px; 
@@ -11,7 +11,7 @@
 
 /* greater than 1100 pixels but less than or equal to 1200 pixels,
   display first image on top row */
-@media only screen and (min-width : 1100px) and (max-width: 1200px) {
+@media only screen and (min-width: 1100px) and (max-width: 1200px) {
         .software { 
                 width:128px; 
                 height:240px; 
@@ -21,7 +21,7 @@
 }
 /* greater than 1000 pixels but less than or equal to 1100 pixels,
  display the third image on the top row  */
-@media only screen and (min-width : 1000px) and (max-width: 1100px) {
+@media only screen and (min-width: 1000px) and (max-width: 1100px) {
         .software { 
                 width:128px; 
                 height:240px; 
@@ -32,7 +32,7 @@
 
 /* greater than 900  pixels but less than or equal to 1000 pixels,
  display the fourth image on the top row. */
-@media only screen and (min-width : 900px) and (max-width: 1000px) {
+@media only screen and (min-width: 900px) and (max-width: 1000px) {
         .software { 
                 width:128px; 
                 height:240px; 
@@ -42,7 +42,7 @@
 } 
 /* greater than 800  pixels but less than or equal to 900 pixels, 
 display the fifth image on the top row. */
-@media only screen and (min-width : 800px) and (max-width: 900px) {
+@media only screen and (min-width: 800px) and (max-width: 900px) {
         .software { 
                 width:128px; 
                 height:240px; 
@@ -52,7 +52,7 @@ display the fifth image on the top row. */
 } 
 /* greater than 700 pixels but less than or equal to 800 pixels, 
 display the first image on the bottom row  */
-@media only screen and (min-width : 700px) and (max-width: 800px) {
+@media only screen and (min-width: 700px) and (max-width: 800px) {
         .software { 
                 width:128px; 
                 height:240px; 
@@ -62,7 +62,7 @@ display the first image on the bottom row  */
 } 
 /* greater than 600  pixels but less than or equal to 700 pixels, 
 display the second image on the bottom row. */
-@media only screen and (min-width : 600px) and (max-width: 700px) {
+@media only screen and (min-width: 600px) and (max-width: 700px) {
         .software { 
                 width:128px; 
                 height:240px; 
@@ -73,7 +73,7 @@ display the second image on the bottom row. */
 
 /* greater than 500  pixels but less than or equal to 600 pixels, 
 display the third image on the bottom row. */
-@media only screen and (min-width : 500px) and (max-width: 600px) {
+@media only screen and (min-width: 500px) and (max-width: 600px) {
         .software { 
                 width:128px; 
                 height:240px; 
@@ -83,7 +83,7 @@ display the third image on the bottom row. */
 } 
 /* greater than 400  pixels but less than or equal to 500 pixels, 
 display the fourth image on the bottom row. */
-@media only screen and (min-width : 400px) and (max-width: 500px) {
+@media only screen and (min-width: 400px) and (max-width: 500px) {
         .software { 
                 width:128px; 
                 height:240px; 
@@ -93,7 +93,7 @@ display the fourth image on the bottom row. */
 } 
 /* greater than 300 pixels but less than 400 pixels, 
 the bottom-right-most image . */
-@media only screen and (min-width : 300px) and (max-width: 400px) {
+@media only screen and (min-width: 300px) and (max-width: 400px) {
         .software { 
                 width:128px; 
                 height:240px; 
