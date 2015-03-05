@@ -15,25 +15,9 @@ function initialize() {
     map = new google.maps.Map(document.getElementById('map-canvas'),
                                   mapOptions);
 
-    lmark2 = new google.maps.LatLng(myLat,myLng);
-    marker = new google.maps.Marker({
-        position: lmark2,
-        map: map,
-        title: "RickSoulen"
-    });
 
-    marker.setMap(map);
     
     getMyLocation();
-
-    // // This is a global info window...
-    // var infowindow = new google.maps.InfoWindow();
-    
-    // // Open info window on click of marker
-    // google.maps.event.addListener(marker, 'click', function() {
-    //     infowindow.setContent(marker.title);
-    //     infowindow.open(map, marker);
-    // });
 
 }
 
@@ -46,6 +30,20 @@ function getMyLocation() {
                 myLng = position.coords.longitude;
                 elem = document.getElementById("info");
                 elem.innerHTML = "<h1>You are in " + myLat + ", " + myLng + "</h1>";
+
+                // Pan to new location
+                map.panTo( new google.maps.LatLng( myLat, myLng ) );
+
+                // Set the marker
+                lmark2 = new google.maps.LatLng(myLat,myLng);
+
+                marker = new google.maps.Marker({
+                    position: lmark2,
+                    map: map,
+                    title: "RickSoulen"
+                });
+
+    marker.setMap(map);
 
             });
     }
