@@ -6,6 +6,12 @@ var marker;
 var mapOptions;
 
 function initialize() {
+
+     mapOptions = {
+        zoom: 16,
+        center: new google.maps.LatLng(myLat, myLng)
+    };
+
     map = new google.maps.Map(document.getElementById('map-canvas'),
                                   mapOptions);
 
@@ -15,11 +21,6 @@ function initialize() {
         map: map,
         title: "RickSoulen"
     });
-
-     mapOptions = {
-        zoom: 16,
-        center: new google.maps.LatLng(myLat, myLng)
-    };
 
     marker.setMap(map);
     
@@ -45,7 +46,7 @@ function getMyLocation() {
                 myLng = position.coords.longitude;
                 elem = document.getElementById("info");
                 elem.innerHTML = "<h1>You are in " + myLat + ", " + myLng + "</h1>";
-                
+
             });
     }
     else {
