@@ -8,10 +8,7 @@ function parse() {
     request.open("GET", url, true);
 
     //Send the proper header information along with the request
-    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    request.setRequestHeader("Connection", "close");
-    
-    request.send();  
+    request.send(); 
 
     request.onreadystatechange = function() {//Call a function when the state changes.
         if(request.readyState == 4 && request.status == 200) {
