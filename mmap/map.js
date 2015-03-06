@@ -11,7 +11,7 @@ var infowindow = new google.maps.InfoWindow();
 function initialize() {
 
     mapOptions = {
-        zoom: 16,
+        zoom: 15,
         center: new google.maps.LatLng(myLat, myLng)
     };
 
@@ -21,18 +21,14 @@ function initialize() {
 
 }
 
-
-
 function getMyLocation() {
     if (navigator.geolocation) { // the navigator.geolocation object is supported on your browser
         navigator.geolocation.getCurrentPosition(function(position) {
             myLat = position.coords.latitude;
             myLng = position.coords.longitude;
-            elem = document.getElementById("info");
-            elem.innerHTML = "<h1>You are in " + myLat + ", " + myLng + "</h1>";
-
+           
             // Pan to new location
-            map.panTo( new google.maps.LatLng( myLat, myLng ) );
+            map.panTo( new google.maps.LatLng(myLat, myLng ) );
 
             // Set the marker
             lmark2 = new google.maps.LatLng(myLat,myLng);
@@ -62,8 +58,6 @@ function getMyLocation() {
 
             marker.setMap(map);
 
-            console.log(distance(myLat, myLng, 0, 0));
-
             HTTP_post(myLat, myLng, "RickSoulen");
         });
 
@@ -89,61 +83,90 @@ function HTTP_post (myLat, myLong, myLogin) {
     request.setRequestHeader("Content-length", params.length);
     request.setRequestHeader("Connection", "close");
     
-    console.log("about to send request")
     request.send(params);  
 
     request.onreadystatechange = function() {//Call a function when the state changes.
         if(request.readyState == 4 && request.status == 200) {
             data = JSON.parse(request.responseText);
-            console.log(data);
-            text = JSON.stringify(data);
-            // elem = document.getElementById("info");
-            // elem.innerHTML = "<h1>" + text + "</h1>";
-            process_response(data);
+            process_response2(data);
         }
     }
 
 }
 
-function process_response(data) {
-    console.log("in process response");
+function process_response2(data) {
     length = data.length;
-    console.log(length);
-
-
-    var infowindow = new google.maps.InfoWindow();
-
+    windows = {}
     var s_marker, i;
-
-    for (i = 0; i < length-1; i++) {  
+    total_content = ""
+    for (i = 0; i < length-4; i++) {  
         login = data[i]["login"];
         if (login != "RickSoulen") {
+            windows[login] = {}
             lat = data[i]["lat"];
-            lng = data[i]["lng"]
+            lng = data[i]["lng"];
             lat_lng = new google.maps.LatLng(lat, lng);
-            var infowindow = new google.maps.InfoWindow();
 
-            s_marker = new google.maps.Marker({
+            windows[login]["marker"] = new google.maps.Marker({
                 position: lat_lng,
                 map: map,
                 title: login
             });
             d = Math.round(distance(myLat, myLng, lat, lng)*100) / 100;
-            contentString = '<div id="content">'+
-                '<div id="siteNotice">'+
-                '</div>'+
-                '<h3 id="firstHeading" class="firstHeading">' + login + '</h3>'+
+            windows[login]["contentString"] = '<div id="content">'+
+                '<h3>' + login + '</h3>'+
                 '<p> Distance from ' + myName + ": " + d + " miles </p>"
                 '</div>' + '</div>';  
-            console.log(contentString);
-            elem = document.getElementById("info");
-            elem.innerHTML = contentString;
-            google.maps.event.addListener(s_marker, 'click', (function(s_marker, i) {
-                return function() {
-                      infowindow.setContent(contentString);
-                      infowindow.open(map, s_marker);
-                }
-            })(s_marker));
+            total_content = total_content + windows[login]["contentString"];
+
+            windows[login]["window"]= new google.maps.InfoWindow({
+                content: windows[login]["contentString"]
+            });
+            
+            google.maps.event.addListener(windows[login]["marker"], 'click', function() {
+                windows[login]["window"].open(map, windows[login]["marker"]);
+            });
+
+        }
+    }
+    console.log(windows);
+    people_info = document.getElementById('people');
+    people_info.innerHTML = total_content
+
+}
+ 
+function process_response(data) {
+    length = data.length;
+    windows = {}
+    var s_marker, i;
+
+    for (i = 0; i < length-4; i++) {  
+        login = data[i]["login"];
+        if (login != "RickSoulen") {
+            windows[login] = {}
+            lat = data[i]["lat"];
+            lng = data[i]["lng"];
+            lat_lng = new google.maps.LatLng(lat, lng);
+
+            windows[login]["marker"] = new google.maps.Marker({
+                position: lat_lng,
+                map: map,
+                title: login
+            });
+
+            d = Math.round(distance(myLat, myLng, lat, lng)*100) / 100;
+            windows[login]["contentString"] = '<div id="content">'+
+                '<h3>' + login + '</h3>'+
+                '<p> Distance from ' + myName + ": " + d + " miles </p>"
+                '</div>' + '</div>';  
+
+            windows[login]["window"]= new google.maps.InfoWindow({
+                content: windows[login]["contentString"]
+            });
+            
+            google.maps.event.addListener(windows[login]["marker"], 'click', function() {
+                windows[login]["window"].open(map, windows[login]["marker"]);
+            });
 
             // google.maps.event.addListener(s_marker, 'click', function() {
             //         infowindow.setContent(contentString);
@@ -153,7 +176,6 @@ function process_response(data) {
         }
     }
 }
-        
 
 
 
