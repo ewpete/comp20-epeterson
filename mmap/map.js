@@ -94,9 +94,11 @@ function HTTP_post (myLat, myLong, myLogin) {
 
     request.onreadystatechange = function() {//Call a function when the state changes.
         if(request.readyState == 4 && request.status == 200) {
-            // alert(request.responseText);
             data = JSON.parse(request.responseText);
             console.log(data);
+            text = JSON.stringify(data);
+            // elem = document.getElementById("info");
+            // elem.innerHTML = "<h1>" + text + "</h1>";
             process_response(data);
         }
     }
@@ -108,38 +110,51 @@ function process_response(data) {
     length = data.length;
     console.log(length);
 
-    for (i = 1; i < length; i++) {
-            lat = data[i].lat;
-            lng = data[i].lng;
-            login = data[i].login;
+
+    var infowindow = new google.maps.InfoWindow();
+
+    var s_marker, i;
+
+    for (i = 0; i < length-1; i++) {  
+        login = data[i]["login"];
+        if (login != "RickSoulen") {
+            lat = data[i]["lat"];
+            lng = data[i]["lng"]
+            lat_lng = new google.maps.LatLng(lat, lng);
+            var infowindow = new google.maps.InfoWindow();
+
+            s_marker = new google.maps.Marker({
+                position: lat_lng,
+                map: map,
+                title: login
+            });
             d = Math.round(distance(myLat, myLng, lat, lng)*100) / 100;
             contentString = '<div id="content">'+
-              '<div id="siteNotice">'+
-              '</div>'+
-              '<h3 id="firstHeading" class="firstHeading">' + login + '</h3>'+
-              '<p> Distance from ' + myName + ": " + d + " miles </p>"
-              '</div>' + '</div>';
+                '<div id="siteNotice">'+
+                '</div>'+
+                '<h3 id="firstHeading" class="firstHeading">' + login + '</h3>'+
+                '<p> Distance from ' + myName + ": " + d + " miles </p>"
+                '</div>' + '</div>';  
+            console.log(contentString);
+            elem = document.getElementById("info");
+            elem.innerHTML = contentString;
+            google.maps.event.addListener(s_marker, 'click', (function(s_marker, i) {
+                return function() {
+                      infowindow.setContent(contentString);
+                      infowindow.open(map, s_marker);
+                }
+            })(s_marker));
 
-            // elem = document.getElementById("info");
-            // elem.innerHTML = contentString
-            // location = new google.maps.LatLng(data[i].lat,data[i].lng);
-            // s_marker = new google.maps.Marker({
-            //     position: location,
-            //     map: map,
-            //     title: data[i].id,
-
-            // });
-
-            
             // google.maps.event.addListener(s_marker, 'click', function() {
-            //     infowindow.setContent(s_marker.title);
-            //     infowindow.open(map, s_marker);
-            // });
+            //         infowindow.setContent(contentString);
+            //         infowindow.open(map, s_marker);
 
-            // s_marker.setMap(map);
-
+            //     });
+        }
     }
 }
+        
+
 
 
 function distance(myLat, myLng, theirLat, theirLng) {
