@@ -37,17 +37,26 @@ function getMyLocation() {
             // Set the marker
             lmark2 = new google.maps.LatLng(myLat,myLng);
             var image = 'drum.png';
-
+            myName = "RickSoulen"
             marker = new google.maps.Marker({
                 position: lmark2,
                 map: map,
-                title: "RickSoulen",
+                title: myName,
                 icon: image
             });
 
-            
+            contentString = '<div id="content">'+
+              '<div id="siteNotice">'+
+              '</div>'+
+              '<h3 id="firstHeading" class="firstHeading">' + myName + '</h3>'+
+
+              '</div>'+
+              '</div>';
+            infowindow = new google.maps.InfoWindow({
+                  content: contentString
+            });
+
             google.maps.event.addListener(marker, 'click', function() {
-                infowindow.setContent(marker.title);
                 infowindow.open(map, marker);
             });
 
@@ -55,7 +64,7 @@ function getMyLocation() {
 
             console.log(distance(myLat, myLng, 0, 0));
 
-
+            HTTP_post(myLat, myLng, "RickSoulen");
         });
 
     }
@@ -65,14 +74,75 @@ function getMyLocation() {
 
 }
 
-function HTTP_post (myLat, myLong, login) {
-
+function HTTP_post (myLat, myLong, myLogin) {
     var request = new XMLHttpRequest();
+    
+
+
+    var params = "login=" + myLogin + "&lat=" + myLat + "&lng=" + myLng;
+
+    var url = "https://secret-about-box.herokuapp.com/sendLocation";
+    request.open("POST", url, true);
+
+    //Send the proper header information along with the request
+    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    request.setRequestHeader("Content-length", params.length);
+    request.setRequestHeader("Connection", "close");
+    
+    console.log("about to send request")
+    request.send(params);  
+
+    request.onreadystatechange = function() {//Call a function when the state changes.
+        if(request.readyState == 4 && request.status == 200) {
+            // alert(request.responseText);
+            data = JSON.parse(request.responseText);
+            console.log(data);
+            process_response(data);
+        }
+    }
 
 }
 
+function process_response(data) {
+    console.log("in process response");
+    length = data.length;
+    console.log(length);
 
-function distance(myLat, myLng, theirLat, theirLon) {
+    for (i = 1; i < length; i++) {
+            lat = data[i].lat;
+            lng = data[i].lng;
+            login = data[i].login;
+            d = Math.round(distance(myLat, myLng, lat, lng)*100) / 100;
+            contentString = '<div id="content">'+
+              '<div id="siteNotice">'+
+              '</div>'+
+              '<h3 id="firstHeading" class="firstHeading">' + login + '</h3>'+
+              '<p> Distance from ' + myName + ": " + d + " miles </p>"
+              '</div>' + '</div>';
+
+            // elem = document.getElementById("info");
+            // elem.innerHTML = contentString
+            // location = new google.maps.LatLng(data[i].lat,data[i].lng);
+            // s_marker = new google.maps.Marker({
+            //     position: location,
+            //     map: map,
+            //     title: data[i].id,
+
+            // });
+
+            
+            // google.maps.event.addListener(s_marker, 'click', function() {
+            //     infowindow.setContent(s_marker.title);
+            //     infowindow.open(map, s_marker);
+            // });
+
+            // s_marker.setMap(map);
+
+    }
+}
+
+
+function distance(myLat, myLng, theirLat, theirLng) {
     Number.prototype.toRad = function() {
        return this * Math.PI / 180;
     }
@@ -80,7 +150,7 @@ function distance(myLat, myLng, theirLat, theirLon) {
     var lat2 = myLat; 
     var lon2 = myLng; 
     var lat1 = theirLat; 
-    var lon1 = theirLon; 
+    var lon1 = theirLng; 
 
     var R = 6371; // km 
     //has a problem with the .toRad() method below.
