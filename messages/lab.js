@@ -10,7 +10,7 @@ function parse() {
     //Send the proper header information along with the request
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     // request.setRequestHeader("Content-length", params.length);
-    request.setRequestHeader("Connection", "close");
+    // request.setRequestHeader("Connection", "close");
     
     request.send();  
 
