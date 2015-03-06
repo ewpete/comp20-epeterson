@@ -88,7 +88,7 @@ function HTTP_post (myLat, myLong, myLogin) {
     request.onreadystatechange = function() {//Call a function when the state changes.
         if(request.readyState == 4 && request.status == 200) {
             data = JSON.parse(request.responseText);
-            process_response2(data);
+            process_response3(data);
         }
     }
 
@@ -134,6 +134,45 @@ function process_response2(data) {
     people_info.innerHTML = total_content
 
 }
+
+function process_response3(data) {
+    length = data.length;
+    for (i = 0; i < length; i++) {  
+        make_marker(data[i], "RickSoulen");
+       
+    }
+}
+
+function make_marker(data, myName) {
+     login = data["login"];
+        if (login != myName) {
+            lat = data["lat"];
+            lng = data["lng"];
+            lat_lng = new google.maps.LatLng(lat, lng);
+
+            var marker = new google.maps.Marker({
+                position: lat_lng,
+                map: map,
+                title: login
+            });
+
+            d = Math.round(distance(myLat, myLng, lat, lng)*100) / 100;
+            contentString = '<div id="content">'+
+                '<h3>' + login + '</h3>'+
+                '<p> Distance from ' + myName + ": " + d + " miles </p>"
+                '</div>' + '</div>';  
+
+            infowindow = new google.maps.InfoWindow({
+                content: contentString
+            });
+            
+            google.maps.event.addListener(marker, 'click', function() {
+                infowindow.open(map, marker);
+            });
+        }
+
+}
+
  
 function process_response(data) {
     length = data.length;
