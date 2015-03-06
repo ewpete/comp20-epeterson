@@ -28,14 +28,27 @@ function process_data(data) {
     content = ''
     var d;
     for (i = 0; i < data.length; i++) {
-        d = new Date(data[i].created_at);
+        d = format_date(data[i].created_at)
         content += '<div id="content">'+
                 '<h3>' + data[i].username + '</h3>'+
-                '<p>' + data[i].content + "  <span class =\"date\" >"
-                + d.toISOString()+ "</span> </p>"
+                '<p>' + data[i].content + "  </p> <p class =\"date\" >"
+                + d+ "</span> </p>"
 
     }
     messages.innerHTML = content
 
 
 }
+function format_date(string) {
+    var m_names = new Array("January", "February", "March", 
+    "April", "May", "June", "July", "August", "September", 
+    "October", "November", "December");
+
+    var d = new Date(string);
+    var curr_date = d.getDate();
+    var curr_month = d.getMonth();
+    var curr_year = d.getFullYear();
+    return m_names[curr_month] + " " + curr_date + ", " + 
+    + curr_year
+}
+//-->
