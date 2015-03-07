@@ -32,7 +32,11 @@ function getMyLocation() {
 
             // Set the marker
             lmark2 = new google.maps.LatLng(myLat,myLng);
-            var image = 'drum.png';
+            var image = 'ness.jpg';
+            
+            var icon = new google.maps.MarkerImgage(
+                "ne")
+
             myName = "RickSoulen"
             marker = new google.maps.Marker({
                 position: lmark2,
@@ -48,14 +52,15 @@ function getMyLocation() {
 
               '</div>'+
               '</div>';
-            infowindow = new google.maps.InfoWindow({
-                  content: contentString
-            });
+
+
+            marker.content = contentString;
+            infowindow = new google.maps.InfoWindow();
 
             google.maps.event.addListener(marker, 'click', function() {
-                infowindow.open(map, marker);
+                infowindow.setContent(this.content);
+                infowindow.open(this.getMap(), this);
             });
-
             marker.setMap(map);
 
             HTTP_post(myLat, myLng, "RickSoulen");
@@ -70,19 +75,14 @@ function getMyLocation() {
 
 function HTTP_post (myLat, myLong, myLogin) {
     var request = new XMLHttpRequest();
-    
-
-
     var params = "login=" + myLogin + "&lat=" + myLat + "&lng=" + myLng;
-
     var url = "https://secret-about-box.herokuapp.com/sendLocation";
     request.open("POST", url, true);
 
     //Send the proper header information along with the request
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    request.setRequestHeader("Content-length", params.length);
+    // request.setRequestHeader("Content-length", params.length);
     request.setRequestHeader("Connection", "close");
-    
     request.send(params);  
 
     request.onreadystatechange = function() {//Call a function when the state changes.
@@ -93,48 +93,6 @@ function HTTP_post (myLat, myLong, myLogin) {
     }
 
 }
-
-function process_response2(data) {
-    length = data.length;
-    windows = {}
-    var s_marker, i;
-    total_content = ""
-    for (i = 0; i < length-4; i++) {  
-        login = data[i]["login"];
-        if (login != "RickSoulen") {
-            windows[login] = {}
-            lat = data[i]["lat"];
-            lng = data[i]["lng"];
-            lat_lng = new google.maps.LatLng(lat, lng);
-
-            windows[login]["marker"] = new google.maps.Marker({
-                position: lat_lng,
-                map: map,
-                title: login
-            });
-            d = Math.round(distance(myLat, myLng, lat, lng)*100) / 100;
-            windows[login]["contentString"] = '<div id="content">'+
-                '<h3>' + login + '</h3>'+
-                '<p> Distance from ' + myName + ": " + d + " miles </p>"
-                '</div>' + '</div>';  
-            total_content = total_content + windows[login]["contentString"];
-
-            windows[login]["window"]= new google.maps.InfoWindow({
-                content: windows[login]["contentString"]
-            });
-            
-            google.maps.event.addListener(windows[login]["marker"], 'click', function() {
-                windows[login]["window"].open(map, windows[login]["marker"]);
-            });
-
-        }
-    }
-    console.log(windows);
-    people_info = document.getElementById('people');
-    people_info.innerHTML = total_content
-
-}
-
 function process_response3(data) {
     length = data.length;
     for (i = 0; i < length; i++) {  
@@ -149,73 +107,26 @@ function make_marker(data, myName) {
             lat = data["lat"];
             lng = data["lng"];
             lat_lng = new google.maps.LatLng(lat, lng);
-
-            var marker = new google.maps.Marker({
+            marker = new google.maps.Marker({
                 position: lat_lng,
                 map: map,
                 title: login
             });
-
             d = Math.round(distance(myLat, myLng, lat, lng)*100) / 100;
             contentString = '<div id="content">'+
                 '<h3>' + login + '</h3>'+
                 '<p> Distance from ' + myName + ": " + d + " miles </p>"
                 '</div>' + '</div>';  
+            marker.content = contentString;
+            infowindow = new google.maps.InfoWindow();
 
-            infowindow = new google.maps.InfoWindow({
-                content: contentString
-            });
-            
             google.maps.event.addListener(marker, 'click', function() {
-                infowindow.open(map, marker);
+                infowindow.setContent(this.content);
+                infowindow.open(this.getMap(), this);
             });
         }
 
 }
-
- 
-function process_response(data) {
-    length = data.length;
-    windows = {}
-    var s_marker, i;
-
-    for (i = 0; i < length-4; i++) {  
-        login = data[i]["login"];
-        if (login != "RickSoulen") {
-            windows[login] = {}
-            lat = data[i]["lat"];
-            lng = data[i]["lng"];
-            lat_lng = new google.maps.LatLng(lat, lng);
-
-            windows[login]["marker"] = new google.maps.Marker({
-                position: lat_lng,
-                map: map,
-                title: login
-            });
-
-            d = Math.round(distance(myLat, myLng, lat, lng)*100) / 100;
-            windows[login]["contentString"] = '<div id="content">'+
-                '<h3>' + login + '</h3>'+
-                '<p> Distance from ' + myName + ": " + d + " miles </p>"
-                '</div>' + '</div>';  
-
-            windows[login]["window"]= new google.maps.InfoWindow({
-                content: windows[login]["contentString"]
-            });
-            
-            google.maps.event.addListener(windows[login]["marker"], 'click', function() {
-                windows[login]["window"].open(map, windows[login]["marker"]);
-            });
-
-            // google.maps.event.addListener(s_marker, 'click', function() {
-            //         infowindow.setContent(contentString);
-            //         infowindow.open(map, s_marker);
-
-            //     });
-        }
-    }
-}
-
 
 
 function distance(myLat, myLng, theirLat, theirLng) {
@@ -243,4 +154,47 @@ function distance(myLat, myLng, theirLat, theirLng) {
     // alert(d);
     return d;
 }
+
+
+// function process_response(data) {
+//     length = data.length;
+//     windows = {}
+//     var s_marker, i;
+
+//     for (i = 0; i < length-4; i++) {  
+//         login = data[i]["login"];
+//         if (login != "RickSoulen") {
+//             windows[login] = {}
+//             lat = data[i]["lat"];
+//             lng = data[i]["lng"];
+//             lat_lng = new google.maps.LatLng(lat, lng);
+
+//             windows[login]["marker"] = new google.maps.Marker({
+//                 position: lat_lng,
+//                 map: map,
+//                 title: login
+//             });
+
+//             d = Math.round(distance(myLat, myLng, lat, lng)*100) / 100;
+//             windows[login]["contentString"] = '<div id="content">'+
+//                 '<h3>' + login + '</h3>'+
+//                 '<p> Distance from ' + myName + ": " + d + " miles </p>"
+//                 '</div>' + '</div>';  
+
+//             windows[login]["window"]= new google.maps.InfoWindow({
+//                 content: windows[login]["contentString"]
+//             });
+            
+//             google.maps.event.addListener(windows[login]["marker"], 'click', function() {
+//                 windows[login]["window"].open(map, windows[login]["marker"]);
+//             });
+
+//             // google.maps.event.addListener(s_marker, 'click', function() {
+//             //         infowindow.setContent(contentString);
+//             //         infowindow.open(map, s_marker);
+
+//             //     });
+//         }
+//     }
+// }
 
