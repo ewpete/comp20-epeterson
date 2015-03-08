@@ -32,10 +32,11 @@ function getMyLocation() {
 
             // Set the marker
             lmark2 = new google.maps.LatLng(myLat,myLng);
-            var image = 'ness.jpg';
+            var image = 'ness.png';
             
-            var icon = new google.maps.MarkerImgage(
-                "ne")
+            var icon = new google.maps.MarkerImage(
+                image
+                )
 
             myName = "RickSoulen"
             marker = new google.maps.Marker({
