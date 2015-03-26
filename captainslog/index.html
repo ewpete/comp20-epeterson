@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Captain's Log</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js">
+    </script>
+    <script>
+
+        function timestamp() {
+            date = new Date();
+            return (date.getMonth()+1)  + "/" 
+                                        + date.getDate() + "/"
+                                        + date.getFullYear() + " @ "  
+                                        + date.getHours() + ":"  
+                                        + date.getMinutes() + ":" 
+                                        + date.getSeconds();
+        }
+
+        function get_cached_log() {
+            num_messages = localStorage.length;
+            for (i = 0; i < num_messages; i++) {
+                $('div#log').prepend("<p>" + localStorage[i] + "</p>");
+            }
+            return num_messages;
+        }
+
+        $(document).ready(function(){
+            index = get_cached_log();
+            box = $('input#msg');
+            box.keypress(function (e) {
+                if (e.which == 13) {
+                    message = timestamp() + " - " + box.val();
+                    box.val('');
+                    localStorage.setItem(index, message);
+                    index += 1
+                    $("div#log").prepend("<p>" + message + "</p>");
+                    return false;    
+                }
+            });
+        });
+
+    </script>
+</head>
+
+<body>
+    <h1>Captain's Log</h1>
+    <h3>New entry: <input type="text" id="msg" name="msg" size="30" /></h3>
+    <div id="log"></div>
+</body>
+</html>
