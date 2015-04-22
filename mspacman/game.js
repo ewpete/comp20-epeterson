@@ -14,4 +14,9 @@ function init() {
     else {
         alert('Sorry, canvas is not supported on your browser!');
     }  
+
+    test = document.getElementById("eric_test");
+    string = new Date();
+    alert(string);
+    // test.append("<p>" + string + "</p>");
 }     

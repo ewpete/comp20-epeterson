@@ -80,11 +80,14 @@ function HTTP_post (myLat, myLong, myLogin) {
     //initialize request
     var request = new XMLHttpRequest();
     var params = "login=" + myLogin + "&lat=" + myLat + "&lng=" + myLng;
-    var url = "https://secret-about-box.herokuapp.com/sendLocation";
+    // var url = "https://secret-about-box.herokuapp.com/sendLocation";
+    var url = "https://frozen-temple-1955.herokuapp.com/sendLocation";
+    console.log("before posting");
     request.open("POST", url, true);
 
     //Send the proper header information along with the request
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    console.log("before sending post");
     request.send(params);  
     //this function is called everytime a readystate change, and only calls
     // the next function, process_response, when the final ready state is
@@ -104,6 +107,7 @@ function HTTP_post (myLat, myLong, myLogin) {
 function process_response(data) {
     length = data.length;
     for (i = 0; i < length; i++) {
+        console.log(data[i]);
         make_marker(data[i], "RickSoulen");
        
     }
@@ -113,6 +117,7 @@ function process_response(data) {
 function make_marker(data, myName) {
      login = data["login"];
         if (login != myName) { //ignore myself, i've already been added
+            console.log("aa");
             lat = data["lat"];
             lng = data["lng"];
             lat_lng = new google.maps.LatLng(lat, lng);
@@ -122,7 +127,8 @@ function make_marker(data, myName) {
                 title: login
             });
             //calculate the distance from me using the haversine formula
-            d = Math.round(haversine(myLat, myLng, lat, lng)*100) / 100;
+            // d = Math.round(haversine(myLat, myLng, lat, lng)*100) / 100;
+            d = 5;
             contentString = '<div id="content">'+
                 '<h3>' + login + '</h3>'+
                 '<p> Distance from ' + myName + ": " + d + " miles </p>"
