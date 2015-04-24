@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title> Security Report - mmap </title>
+  </head>
+  <body>
+<p>Author: Eric Peterson</p>
+<p>Date: 4/24/2015</p>
+
+<p>"Security Report for Jake Jarvis' mmap assignment"</p>
+
+<h1>Introduction</h1>
+
+    <p> This report is a security assesment of Jake Jarvis' Tufts Marauders Map. The Marauder's Map is a webpage that shows a user's location on the map when they sign in, as well as the locations of other users who have signed in using similar webpages. It was built using a Node.js engine, utilizing the express module and mongodb for data persistence. Also, the Google Maps API is used to display the locations of users on the map. </p>
+
+    <p> While the application is fully functional for most users, there are inherent security flaws that make the service vulnerable to a number of malicious threats. One example is the fact that the API is anonymous, so anyone can post to it without identifying themselves. Another is that the server assumes that user input is valid, when there is no actual validation or cleaning of the input data. These such errors will be explained in full below. </p>
+
+<h1>Methodology</h1>
+
+	<p>My first method of testing was black box. Acting as any attacker without access to the server-side code, I began to use the standard tool - curl - to send HTML requests to the page. I used his gh-pages mmap site, and his heroku server address. </p>
+	
+	<p>After black boxing testing, I opened up the source code in attempt to find even more issues that could be exploited.</p> 
+
+<h1>Abstract of Findings</h1>
+	
+	<p> Overall, the system is dependent upon correct information being posted. Invalid inputs can lead to cross-site scripting, server overflow, and a convoluted and useless map, rendering the once useful service broken </p>
+
+        The system relies too much on the assumption that the user is posting correct information. As well as this, erroneous user post information could spam servers and result in a disfunctional google map. Measures need to be taken to monitor user posted information as well introducing a method to limit posted information from a single source.</p> 
+
+<h1>Issues Found</h1>
+
+	<h2>1: Cross-site scripting</h2>
+    <ul> 
+        <li>
+            <p> Location: POST/GET request </p>
+        </li>
+        <li>
+            <p> Severity: <b> HIGH </b> </p>
+                <ul> 
+                    <li>
+                        While the list of ways an attacker can manipulate the server and client is nearly endless, some of the major concerns are spoofing the site to send information elsewhere, tricking the user into trusting the attacker instead of the website, and more.
+                </ul>
+        </li>
+        <li>
+        <p> Description: </p>
+	        <ul>
+		        <li>Cross-site scripting is perhaps the most serious flaw in the server design. Cross-site scripting is when an attacker posts data to the server in the form JavaScript code. Then, this code is is executed on subsequent server requests. This is a serious flaw because there is no protection from users who choose to post malicious javascript. This can result in other users being redirected, the page information being destroyed, and other severe consequences. </li>
+
+
+                <li> Even worse, there could be breaches of user information. The attacker could inject a MongoDB query, and then find any information the server held. This could be private information, or information not used for the purposes of the site. </li>
+
+            </ul>
+        </li>
+        <li>
+            <p> Proof: </p>
+            <li>
+                <p> Code used: </p>
+
+                    <img border="0" alt="W3Schools" src="curl-1.png" width="500" height="50">
+            </li>
+            <li>
+                <p> Result:</p>
+	
+                    <img border="0" alt="W3Schools" src="XSS.png" width="500" height="300">
+            </li>
+        </li>
+        <li>	
+	        <p> Resolution: </p>
+                <ul>
+                    <li>This issue can be solved by cleaning up user input before it engers the database. "Dangerous" characters used for javascript code have "safe" html equivalents, that do not execute code. The input should be filtered through a list of characters that are safe, with the dangerous ones replaced. 
+                    </li>
+
+                    <li> For example:
+                     str.match(/[\d\w\s\]|[\~\!\@\#\$\^\*\-\_\+\;]*/g).join(''); can be used to eliminate the dangerous characters. Alternatively, this same filtering can be applied using db.collection.update() for MongoDB.</li>
+
+                </ul>
+        </li>
+    </ul>
+
+
+
+    <h2>2: No authentication to make API calls </h2>
+    <ul> 
+        <li>
+            <p> Location: POST request </p>
+        </li>
+        <li>
+            <p> Severity: <b> Medium </b> Any anonymous poster can put as much data into the server database as they want, overflowing the database</p>
+        </li>
+        <li>
+        <p> Description: </p>
+            <ul>
+                <li>Because there is no user authentication required with API keys, anyone can make many, many POST requests, ultimately filling the server with erroneous data. For example, they could fill every single latitude and longitude of the map, rendering it worthless. </li>
+
+            </ul>
+        </li>
+        <li>
+            <p> Proof: </p>
+                <li>
+                    <p> Code used: </p>
+
+                        <img border="0" alt="W3Schools" src="curl-1.png" width="500" height="50">
+                </li>
+                <li>
+                    <p> Result:</p>
+                        <img border="0" alt="W3Schools" src="2.png" width="500" height="300">
+                </li>
+        </li>
+        <li>    
+            <p> Resolution: </p>
+                <ul>
+                    <li>This issue can be resolved by issuing API keys to only trusted users. Then, all posts can be tracked to their source and those exploiting the API can be removed from the permission list.
+                    </li>
+
+                   
+                </ul>
+        </li>
+</ul>
+
+    <h2>3: No authentication to make API calls </h2>
+    <ul> 
+        <li>
+            <p> Location: POST request </p>
+        </li>
+        <li>
+            <p> Severity: <b> Medium </b> Any anonymous poster can put as much data into the server database as they want, overflowing the database</p>
+        </li>
+        <li>
+        <p> Description: </p>
+            <ul>
+                <li>Because there is no user authentication required with API keys, anyone can make many, many POST requests, ultimately filling the server with erroneous data. For example, they could fill every single latitude and longitude of the map, rendering it worthless. </li>
+
+            </ul>
+        </li>
+        <li>
+            <p> Proof: </p>
+                <li>
+                    <p> Code used: </p>
+
+                        <img border="0" alt="W3Schools" src="curl-1.png" width="500" height="50">
+                </li>
+                <li>
+                    <p> Result:</p>
+                        <img border="0" alt="W3Schools" src="2.png" width="500" height="300">
+                </li>
+        </li>
+        <li>    
+            <p> Resolution: </p>
+                <ul>
+                    <li>This issue can be resolved by issuing API keys to only trusted users. Then, all posts can be tracked to their source and those exploiting the API can be removed from the permission list.
+                    </li>
+
+                   
+                </ul>
+        </li>
+</ul>
+
+<h1>Conclusion</h1>
+<p> Based on the issues found, there is some serious work to be done to remove the security flaws in the system. While the changes needed to make the site more secure are relatively simple, the repurcissions of leaving the security holes in are massive.  </p>
+
+<p> I would charge $500 dollars for my services. </p>
+
+
+
+
