@@ -31,6 +31,23 @@ function initialize() {
 // this function gets my location, sets my image and marker on the map,
 // and then calls HTTP_post to postmy location and receive info about 
 // everyone else in the class
+
+var http = require('http');
+
+var options = {
+  host: 'example.com',
+  port: 80,
+  path: '/foo.html'
+};
+
+http.get(options, function(resp){
+  resp.on('data', function(chunk){
+    //do something with chunk
+  });
+}).on("error", function(e){
+  console.log("Got error: " + e.message);
+});
+
 function getMyLocation() {
     if (navigator.geolocation) { // if you support geolocation...
         navigator.geolocation.getCurrentPosition(function(position) {

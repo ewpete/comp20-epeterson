@@ -78,44 +78,37 @@
         </li>
     </ul>
 
-
-
-    <h2>2: No authentication to make API calls </h2>
+    <h2>2: Cross site HTML injection </h2>
     <ul> 
         <li>
-            <p> Location: POST request </p>
+            <p> Location: GET/POST request </p>
         </li>
         <li>
-            <p> Severity: <b> Medium </b> Any anonymous poster can put as much data into the server database as they want, overflowing the database</p>
+            <p> Severity: <b> Medium </b> Any attacker can anonymously inject new HTML into the database which can be displayed on the GET request</p>
         </li>
         <li>
         <p> Description: </p>
             <ul>
-                <li>Because there is no user authentication required with API keys, anyone can make many, many POST requests, ultimately filling the server with erroneous data. For example, they could fill every single latitude and longitude of the map, rendering it worthless. </li>
+                <li>Similar to Cross Site Scripting, a user can inject HTML code into the database so that when another user makes a GET request, they might find a different webpage than was intended.  </li>
 
             </ul>
         </li>
         <li>
             <p> Proof: </p>
                 <li>
-                    <p> Code used: </p>
-
-                        <img border="0" alt="W3Schools" src="curl-1.png" width="500" height="50">
-                </li>
-                <li>
-                    <p> Result:</p>
-                        <img border="0" alt="W3Schools" src="2.png" width="500" height="300">
+                   The evidence for this weakness is the same as above.
                 </li>
         </li>
         <li>    
             <p> Resolution: </p>
                 <ul>
-                    <li>This issue can be resolved by issuing API keys to only trusted users. Then, all posts can be tracked to their source and those exploiting the API can be removed from the permission list.
+                    <li>This issue can be resolved using the same methods as given above.
                     </li>
 
                    
                 </ul>
         </li>
+        
 </ul>
 
     <h2>3: No authentication to make API calls </h2>
@@ -148,7 +141,7 @@
         <li>    
             <p> Resolution: </p>
                 <ul>
-                    <li>This issue can be resolved by issuing API keys to only trusted users. Then, all posts can be tracked to their source and those exploiting the API can be removed from the permission list.
+                    <li>This issue can be resolved by issuing API keys issued to only trusted users. Then, all posts can be tracked to their source and those exploiting the API can be removed from the permission list.
                     </li>
 
                    
